@@ -1,0 +1,5 @@
+# Supabase
+.env*.local
+.env*.example
+.env*.prod
+seed.sql

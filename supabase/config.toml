@@ -1,0 +1,19 @@
+# Supabase Configuration
+project_id = "sdafdqzvaubrqtxhugko"
+
+[db]
+port = 5432
+major_version = 15
+
+[api]
+port = 3000
+schemas = ["public", "graphql_public"]
+max_rows = 1000
+
+[realtime]
+enabled = true
+max_bytes_per_second = 1000
+
+[auth]
+enable_signup = true
+enable_email_confirmations = false
