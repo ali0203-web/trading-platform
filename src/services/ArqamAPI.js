@@ -6,16 +6,34 @@
 
 class ArqamAPI {
   constructor() {
-    this.baseURL = 'https://api.arqamcapital.com/v1'
+    // Use local proxy to avoid CORS issues
+    this.baseURL = '/api/arqam-proxy'
     this.apiKey = import.meta.env.VITE_ARQAM_API_KEY
     this.accountId = import.meta.env.VITE_ARQAM_ACCOUNT_ID
     this.headers = {
-      'Authorization': `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json',
-      'X-Account-ID': this.accountId,
     }
     this.sessionToken = null
     this.isConnected = false
+  }
+
+  /**
+   * Helper to make proxied requests
+   */
+  async makeProxyRequest(path, method = 'GET', body = null) {
+    const payload = {
+      path,
+      method,
+      body,
+    }
+
+    const response = await fetch(this.baseURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+
+    return response
   }
 
   /**
@@ -23,13 +41,9 @@ class ArqamAPI {
    */
   async connect() {
     try {
-      const response = await fetch(`${this.baseURL}/auth/token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          api_key: this.apiKey,
-          account_id: this.accountId,
-        }),
+      const response = await this.makeProxyRequest('/auth/token', 'POST', {
+        api_key: this.apiKey,
+        account_id: this.accountId,
       })
 
       if (response.ok) {
@@ -53,10 +67,8 @@ class ArqamAPI {
    */
   async getAccountBalance() {
     try {
-      const response = await fetch(`${this.baseURL}/account/balance`, {
-        headers: this.headers,
-      })
-      
+      const response = await this.makeProxyRequest('/account/balance', 'GET')
+
       if (response.ok) {
         return await response.json()
       } else {
@@ -73,9 +85,7 @@ class ArqamAPI {
    */
   async getOpenPositions() {
     try {
-      const response = await fetch(`${this.baseURL}/positions/open`, {
-        headers: this.headers,
-      })
+      const response = await this.makeProxyRequest('/positions/open', 'GET')
 
       if (response.ok) {
         const data = await response.json()
@@ -125,11 +135,7 @@ class ArqamAPI {
         time_in_force: 'DAY',
       }
 
-      const response = await fetch(`${this.baseURL}/orders/place`, {
-        method: 'POST',
-        headers: this.headers,
-        body: JSON.stringify(payload),
-      })
+      const response = await this.makeProxyRequest('/orders/place', 'POST', payload)
 
       if (response.ok) {
         const data = await response.json()
@@ -173,9 +179,7 @@ class ArqamAPI {
    */
   async getQuote(symbol) {
     try {
-      const response = await fetch(`${this.baseURL}/quotes/${symbol}`, {
-        headers: this.headers,
-      })
+      const response = await this.makeProxyRequest(`/quotes/${symbol}`, 'GET')
 
       if (response.ok) {
         return await response.json()
