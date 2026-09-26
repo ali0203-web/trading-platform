@@ -24,7 +24,7 @@ export default function RiskManagement() {
           <div className="progress-bar">
             <div className="progress" style={{width: '12%'}}></div>
           </div>
-          <span>-4.2% (Safe: <-10%)</span>
+          <span>-4.2% (Limit: -10%)</span>
         </div>
         <div className="risk-card">
           <h3>Position Sizing</h3>
