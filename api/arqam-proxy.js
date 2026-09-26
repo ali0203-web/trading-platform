@@ -86,11 +86,27 @@ export default async function handler(req, res) {
     }
 
     const response = await fetch(url, fetchOptions)
-    const data = await response.json()
 
-    res.status(response.status).json(data)
+    console.log(`[ARQAM PROXY] Response status: ${response.status}`)
+
+    // Handle the response
+    let data
+    const contentType = response.headers.get('content-type') || ''
+
+    try {
+      if (contentType.includes('application/json')) {
+        data = await response.json()
+      } else {
+        data = await response.text()
+      }
+    } catch (parseError) {
+      console.error('[ARQAM PROXY] Parse error:', parseError.message)
+      return res.status(500).json({ error: 'Service error' })
+    }
+
+    res.status(response.status).json({ data })
   } catch (error) {
-    console.error('[ARQAM PROXY] Error:', error.message)
+    console.error('[ARQAM PROXY] Fetch error:', error.message)
     // Never expose error details to client
     res.status(500).json({ error: 'Service error' })
   }
