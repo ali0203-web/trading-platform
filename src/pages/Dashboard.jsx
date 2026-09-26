@@ -52,15 +52,15 @@ export default function Dashboard() {
               <div className="account-info">
                 <div className="info-item">
                   <span className="label">Balance</span>
-                  <span className="value">${balance?.total_value?.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '427,893.45'}</span>
+                  <span className="value">${typeof balance?.total_value === 'number' ? balance.total_value.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '427,893.45'}</span>
                 </div>
                 <div className="info-item">
                   <span className="label">Available</span>
-                  <span className="value">${balance?.buying_power?.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '856,234.12'}</span>
+                  <span className="value">${typeof balance?.buying_power === 'number' ? balance.buying_power.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '856,234.12'}</span>
                 </div>
                 <div className={`info-item gain ${(balance?.daily_pnl || 0) >= 0 ? 'positive' : 'negative'}`}>
                   <span className="label">P&L</span>
-                  <span className="value">{balance?.daily_pnl >= 0 ? '+' : ''}${balance?.daily_pnl?.toLocaleString('en-US', { minimumFractionDigits: 2 }) || '+34,567.89'}</span>
+                  <span className="value">{typeof balance?.daily_pnl === 'number' ? (balance.daily_pnl >= 0 ? '+' : '') + balance.daily_pnl.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '+34,567.89'}</span>
                 </div>
               </div>
             )}

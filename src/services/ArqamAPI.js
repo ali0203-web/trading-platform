@@ -253,6 +253,12 @@ class ArqamAPI {
    */
   subscribeToUpdates(callback) {
     try {
+      // Don't attempt WebSocket connection if using mock data or if no session token
+      if (!this.sessionToken || this.sessionToken.startsWith('mock_')) {
+        console.log('⚠️  WebSocket skipped (mock data mode)')
+        return null
+      }
+
       const wsURL = `wss://api.arqamcapital.com/v1/stream?token=${this.sessionToken}`
       const ws = new WebSocket(wsURL)
 
