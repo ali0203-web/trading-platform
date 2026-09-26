@@ -1,2 +1,6 @@
 .vercel
 .env*
+
+# Arqaam Capital API credentials - use Vercel environment variables
+VITE_ARQAM_*
+ARQAAM_*
